@@ -1,0 +1,5 @@
+organizerId|name|email|organization
+2001|Professor Emily Carter|emily.carter@example.com|Computer Science Department
+2002|Professor David Anderson|david.anderson@example.com|Career Services Center
+2003|Daniel Taylor|daniel.taylor@example.com|Robotics Club
+2004|Sophia Martin|sophia.martin@example.com|Student Union

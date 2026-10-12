@@ -1,0 +1,6 @@
+studentId|name|email|major
+1001|Alice Johnson|alice.johnson@example.com|Computer Science
+1002|Michael Brown|michael.brown@example.com|Mechanical Engineering
+1003|Emma Davis|emma.davis@example.com|Business Administration
+1004|James Wilson|james.wilson@example.com|Mathematics
+1005|Olivia Miller|olivia.miller@example.com|Art and Design
