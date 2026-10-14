@@ -18,8 +18,8 @@ public class EventSystem {
     //the list can ONLY hold Students.
     private ArrayList<Student> students = new ArrayList<>();
 
-// A resizable list that stores all events in the system
-private ArrayList<Event> events = new ArrayList<>();
+	// A resizable list that stores all events in the system
+	private ArrayList<Event> events = new ArrayList<>();
 
     //A resizable list that stores all organizers in the system
     private ArrayList<Organizer> organizers = new ArrayList<>();
@@ -58,10 +58,10 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     public Student findStudent(String id) {
        
         for (Student s : students) {
-            //while .equals() checks whether the text 
-            //is the same.
+			
+            //while .equals() checks whether the text is the same.
             if (s.getStudentId().equals(id)) {
-                return s;   // found: hand back the reference
+                return s;   // found: return the reference
             }
         }
         return null;        // checked everyone, no match
@@ -85,8 +85,8 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //
     //===========================================
     public void displayAllStudents() {
-        //handle the empty list so the user isn't 
-        //shown a blank screen.
+		
+        //handle the empty list so the user isn't shown a blank screen.
         if (students.isEmpty()) {
             System.out.println("No students in the system.");
             return;
@@ -123,16 +123,15 @@ private ArrayList<Registration> registrations = new ArrayList<>();
 
 
 	 // Make sure the organizer exists
-                 if (findOrganizer(event.getOrganizerId()) == null)  {
+        if (findOrganizer(event.getOrganizerId()) == null)  {
   	         System.out.println("Error: organizer does not exist.");
-  	       return false;
-	}
+  	         return false;
+		}
 
 
         // Prevent duplicate event IDs
         if (findEventById(event.getEventId()) != null) {
-            System.out.println("Error: an event with ID "
-                    + event.getEventId() + " already exists.");
+            System.out.println("Error: an event with ID "+ event.getEventId() + " already exists.");
             return false;
         }
 
@@ -192,7 +191,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
 
         for (Event event : events) {
             if (event.getName().toLowerCase()
-                    .contains(name.toLowerCase())) {
+				.contains(name.toLowerCase())) {
                 matches.add(event);
             }
         }
