@@ -1,28 +1,31 @@
 package app;
 
 import persistence.FileManager;
-import persistence.LoadResult;
+import persistence.InitResult;
 
 public class Application {
     private FileManager fileManager;
-
+    private boolean keepRuning = true;
 
     public Application() {
-        //TODO: Creat class
+        fileManager = new FileManager();
     }
 
     public void init()
     {
-    //TODO: load data
-        LoadResult result = fileManager.load();
+        InitResult result = fileManager.init();
         if (!result.isSuccess()) {
-            //do something
+            // TODO: report the failure and stop startup in the application layer.
         }
-        
+        // TODO: read and convert text into business data.
     }
 
     public void run()
     {
+        while(keepRuning)
+        {
+
+        }
     //TODO: run console UI
     //TODO: save data
     }
