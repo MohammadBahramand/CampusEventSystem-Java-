@@ -3,7 +3,7 @@ import java.time.LocalDate; // OR this could be a string
 public class Registration {
     private Student student;
     private Event event;
-    private LocalDate registrationDate
+    private LocalDate registrationDate;
     private String status;
 
     public Registration(Student student, Event event, LocalDate registrationDate, String status) {
@@ -21,8 +21,8 @@ public class Registration {
         return event;
     }
 
-    public Registration getRegistration() {
-        return Registration;
+    public LocalDate getRegistration() {
+        return registrationDate;
     }
 
     public String getStatus() {
@@ -33,15 +33,15 @@ public class Registration {
         this.student = student;
     }
 
-    public void getEvent(Event event) {
+    public void setEvent(Event event) {
         this.event = event;
     }
 
-    public void getRegistration(LocalDate registrationDate) {
+    public void setRegistration(LocalDate registrationDate) {
         this.registrationDate = registrationDate;
     }
 
-    public void getStatus(String status) {
-        this.status = status
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
