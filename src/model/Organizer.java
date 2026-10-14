@@ -29,10 +29,10 @@ public class Organizer {
 
     public void viewOrganizers() {
         System.out.println("ID: " + organizerId + "\nName: " 
-        + name + "\nEmail: " + email + "Organization: " + organization);
+        + name + "\nEmail: " + email + "\nOrganization: " + organization);
     }
 
-    public String toFileString() {
+    public String display() {
         return organizerId + "|" + name + "|" + email + "|" + organization;
     }
 }
