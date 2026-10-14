@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import model.Event;
-
+import model.Organizer;
 public class EventSystem {
 
     //a resizable list that keeps students in the order
@@ -18,6 +18,9 @@ public class EventSystem {
 
 // A resizable list that stores all events in the system
 private ArrayList<Event> events = new ArrayList<>();
+
+    //A resizable list that stores all organizers in the system
+    private ArrayList<Organizer> organizers = new ArrayList<>();
 
     //==========addStudent==========
     //Adds a new student only if the ID 
@@ -214,4 +217,84 @@ private ArrayList<Event> events = new ArrayList<>();
         return Collections.unmodifiableList(events);
     }
 
+
+    //==========addOrganizer==========
+    //Adds a new organizer only if the ID
+    //is not already used.
+    //Returns true if added, false otherwise.
+    //================================
+    public boolean addOrganizer(String id, String name, String email, String organization) {
+        //an empty ID or name makes no sense
+        if (id == null || id.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+            System.out.println("Error: organizer ID and name cannot be blank.");
+            return false;
+        }
+
+        //same duplicate rule as students: search first, create second
+        if (findOrganizer(id) != null) {
+            System.out.println("Error: an organizer with ID " + id + " already exists.");
+            return false;
+        }
+
+        //the list holds a REFERENCE to this one object
+        organizers.add(new Organizer(id, name, email, organization));
+        return true;
+    }
+
+    //==========findOrganizer==========
+    //Linear search by ID.
+    //Returns the Organizer, or null if no match.
+    //=================================
+    public Organizer findOrganizer(String id) {
+        for (Organizer o : organizers) {
+            //strings are compared with .equals(), never ==
+            if (o.getOrganizerId().equals(id)) {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    //==========displayOrganizer==========
+    //Prints one organizer, or a message if
+    //the ID does not exist.
+    //====================================
+    public void displayOrganizer(String id) {
+        Organizer o = findOrganizer(id);
+
+        //always check for null before using the reference
+        if (o == null) {
+            System.out.println("Organizer not found.");
+            return;
+        }
+
+        o.display();
+    }
+
+    //==========displayAllOrganizers==========
+    //Prints every organizer, numbered.
+    //========================================
+    public void displayAllOrganizers() {
+        if (organizers.isEmpty()) {
+            System.out.println("No organizers in the system.");
+            return;
+        }
+
+        int count = 1;
+        for (Organizer o : organizers) {
+            System.out.println("--- Organizer " + count + " ---");
+            o.display();
+            count++;
+        }
+    }
+
+    //==========getOrganizers==========
+    //Read only view for saving to a file.
+    //unmodifiableList lets callers look but
+    //not add or remove, which protects the
+    //duplicate-ID rule.
+    //=================================
+    public List<Organizer> getOrganizers() {
+        return Collections.unmodifiableList(organizers);
+    }
 }
