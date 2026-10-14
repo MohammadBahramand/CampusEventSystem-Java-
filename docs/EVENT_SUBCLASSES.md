@@ -1,24 +1,12 @@
-# Event Subclasses
+Event Subclasses
+By Ghazal Emami
 
-Author: Ghazal Emami · Branch: `feature/subclasses`
+This branch has the four event types for our project: CareerEvent, AcademicEvent, ClubEvent and SocialEvent. They all extend the Event class, so they get the shared info like name, date, location, organizer and capacity.
 
-Four event types that extend the abstract `Event` class in `src/model`:
+Each one adds two fields of its own:
+- CareerEvent: company name and if a resume is required
+- AcademicEvent: subject and speaker
+- ClubEvent: club name and if it's members only
+- SocialEvent: theme and if food is provided
 
-| Class | Extra fields |
-|---|---|
-| `CareerEvent` | `companyName`, `resumeRequired` |
-| `AcademicEvent` | `subject`, `speaker` |
-| `ClubEvent` | `clubName`, `membersOnly` |
-| `SocialEvent` | `theme`, `foodProvided` |
-
-**How they work**
-- The constructor sends the 8 shared values to `Event` with `super(...)`, then saves its own 2 fields.
-- It throws `IllegalArgumentException` if the main field (company, subject, club or theme) is blank.
-- Each class overrides `displayDetails()` to print its own details (polymorphism).
-
-**Example**
-```java
-Event e = new CareerEvent(1, "Resume Workshop", "Get your resume reviewed",
-        "October 15", "2:00 PM", "SSC 212", "ORG1", 30, "Google", true);
-e.displayDetails();
-```
+The constructor sends the shared info to Event using super, checks that the main field isn't empty, and then saves its own two fields. Each class also overrides displayDetails() so it prints its own details.
