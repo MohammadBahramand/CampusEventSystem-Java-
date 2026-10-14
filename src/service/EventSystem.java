@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 import model.Event;
 import model.Organizer;
+import model.Registration;
+import java.time.LocalDate;
 public class EventSystem {
 
     //a resizable list that keeps students in the order
@@ -21,7 +23,7 @@ private ArrayList<Event> events = new ArrayList<>();
 
     //A resizable list that stores all organizers in the system
     private ArrayList<Organizer> organizers = new ArrayList<>();
-
+private ArrayList<Registration> registrations = new ArrayList<>();
     //==========addStudent==========
     //Adds a new student only if the ID 
     //is not already used.
@@ -323,5 +325,173 @@ private ArrayList<Event> events = new ArrayList<>();
     //=================================
     public List<Organizer> getOrganizers() {
         return Collections.unmodifiableList(organizers);
+    }
+    
+    //==========registerStudent==========
+    //Registers a student for an event after checking that the student
+    //exists, the event exists, the student is not already registered,
+    //and the event is not full.
+    //Returns true only if the registration was made.
+    //===================================
+    public boolean registerStudent(String studentId, int eventId, LocalDate date) {
+        Student student = findStudent(studentId);
+        if (student == null) {
+            System.out.println("Error: student not found.");
+            return false;
+        }
+
+        Event event = findEventById(eventId);
+        if (event == null) {
+            System.out.println("Error: event not found.");
+            return false;
+        }
+
+        if (date == null) {
+            System.out.println("Error: a registration date is required.");
+            return false;
+        }
+
+        //an earlier registration for the same student and event, if any
+        Registration existing = findRegistration(studentId, eventId);
+        if (existing != null && existing.getStatus() == Registration.Status.ACTIVE) {
+            System.out.println("Error: this student is already registered for this event.");
+            return false;
+        }
+
+        if (getRegisteredCount(eventId) >= event.getCapacity()) {
+            System.out.println("Error: this event is full.");
+            return false;
+        }
+
+        if (existing != null) {
+            //canceled before: reactivate instead of adding a second record
+            existing.setStatus(Registration.Status.ACTIVE);
+            existing.setDate(date);
+        } else {
+            String id = "R" + (registrations.size() + 1);
+            registrations.add(new Registration(id, student, event, date, Registration.Status.ACTIVE));
+        }
+
+        System.out.println("Registration successful!");
+        System.out.println("Student: " + student.getName());
+        System.out.println("Event: " + event.getName());
+        return true;
+    }
+
+    //same as above, using today's date
+    public boolean registerStudent(String studentId, int eventId) {
+        return registerStudent(studentId, eventId, LocalDate.now());
+    }
+
+    //==========cancelRegistration==========
+    //Cancels an active registration.
+    //Returns false if there is nothing to cancel.
+    //======================================
+    public boolean cancelRegistration(String studentId, int eventId) {
+        Registration r = findRegistration(studentId, eventId);
+        if (r == null || r.getStatus() != Registration.Status.ACTIVE) {
+            System.out.println("Error: no active registration found for that student and event.");
+            return false;
+        }
+
+        r.setStatus(Registration.Status.CANCELED);
+        System.out.println("Registration canceled.");
+        return true;
+    }
+
+    //==========findRegistration==========
+    //Helper: finds the registration (active or canceled) for one
+    //student and one event, or null.
+    //====================================
+    private Registration findRegistration(String studentId, int eventId) {
+        for (Registration r : registrations) {
+            if (r.getStudent() != null && r.getEvent() != null
+                    && r.getStudent().getStudentId().equals(studentId)
+                    && r.getEvent().getEventId() == eventId) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    //==========getRegisteredCount==========
+    //Number of ACTIVE registrations for an event (for capacity checks
+    //and reports).
+    //======================================
+    public int getRegisteredCount(int eventId) {
+        int count = 0;
+        for (Registration r : registrations) {
+            if (r.getStatus() == Registration.Status.ACTIVE
+                    && r.getEvent() != null
+                    && r.getEvent().getEventId() == eventId) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //==========displayStudentRegistrations==========
+    //Lists the events a student is registered for.
+    //===============================================
+    public void displayStudentRegistrations(String studentId) {
+        Student student = findStudent(studentId);
+        if (student == null) {
+            System.out.println("Student not found.");
+            return;
+        }
+
+        System.out.println("Student: " + student.getName());
+        int count = 0;
+        for (Registration r : registrations) {
+            if (r.getStatus() == Registration.Status.ACTIVE
+                    && r.getStudent() != null
+                    && r.getStudent().getStudentId().equals(studentId)) {
+                if (count == 0) {
+                    System.out.println("Registered Events:");
+                }
+                count++;
+                System.out.println(count + ". " + r.getEvent().getName());
+            }
+        }
+
+        if (count == 0) {
+            System.out.println("No registered events.");
+        }
+    }
+
+    //==========displayEventAttendees==========
+    //Lists the students registered for an event.
+    //=========================================
+    public void displayEventAttendees(int eventId) {
+        Event event = findEventById(eventId);
+        if (event == null) {
+            System.out.println("Event not found.");
+            return;
+        }
+
+        System.out.println("Event: " + event.getName());
+        int count = 0;
+        for (Registration r : registrations) {
+            if (r.getStatus() == Registration.Status.ACTIVE
+                    && r.getEvent() != null
+                    && r.getEvent().getEventId() == eventId) {
+                if (count == 0) {
+                    System.out.println("Registered Students:");
+                }
+                count++;
+                System.out.println(count + ". " + r.getStudent().getName());
+            }
+        }
+
+        if (count == 0) {
+            System.out.println("No registered students.");
+        }
+    }
+
+    //==========getRegistrations==========
+    //Read-only view for reports and saving.
+    //====================================
+    public List<Registration> getRegistrations() {
+        return Collections.unmodifiableList(registrations);
     }
 }
