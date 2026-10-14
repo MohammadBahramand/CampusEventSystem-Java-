@@ -1,6 +1,8 @@
 package persistence;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.io.IOException;
 
 public class FileManager {
@@ -34,4 +36,19 @@ public class FileManager {
         }
 
     }
+
+    public WriteResult writeFile(WriteRequest request) {
+
+        Path path = request.relativePath();
+        String content = request.content();
+
+        try {
+            Files.writeString(path, content);
+            return new WriteResult(FileStatus.SUCCESS, null);
+        } catch (IOException error) {
+            return new WriteResult(FileStatus.IO_ERROR, error);
+        }
+
+    }
+
 }
