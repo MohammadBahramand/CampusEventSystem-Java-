@@ -21,8 +21,8 @@ public abstract class Event
     // Location where the event will take place
     private String location;
 
-       // ID of the organizer who manages this event
-       private String organizerId;
+    // ID of the organizer who manages this event
+    private String organizerId;
 
     // Maximum number of students allowed to register
     private int capacity;
@@ -38,7 +38,7 @@ public abstract class Event
         this.date = date;
         this.time = time;
         this.location = location;
-	this.organizerId=organizerId;
+		this.organizerId=organizerId;
         this.capacity = capacity;
     }
 
