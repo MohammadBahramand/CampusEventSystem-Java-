@@ -80,8 +80,9 @@ public abstract class Event
 
 
     // Returns the organizer ID
-    public String getOrganizerId(){
-    return organizerId;
+    public String getOrganizerId()
+        {
+	return organizerId;
     }
 
 

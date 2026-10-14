@@ -116,6 +116,14 @@ private ArrayList<Event> events = new ArrayList<>();
             return false;
         }
 
+
+	 // Make sure the organizer exists
+                 if (findOrganizer(event.getOrganizerId()) == null)  {
+  	         System.out.println("Error: organizer does not exist.");
+  	       return false;
+	}
+
+
         // Prevent duplicate event IDs
         if (findEventById(event.getEventId()) != null) {
             System.out.println("Error: an event with ID "
@@ -129,11 +137,11 @@ private ArrayList<Event> events = new ArrayList<>();
 
 
 
-//==========getEventsByOrganizer==========
-// Returns all events managed by a specific organizer.
-//========================================
-public ArrayList<Event> getEventsByOrganizer(String organizerId)
-{
+       //==========getEventsByOrganizer==========
+      // Returns all events managed by a specific organizer.
+     //========================================
+     public ArrayList<Event> getEventsByOrganizer(String organizerId){
+
     ArrayList<Event> matches = new ArrayList<>();
 
     for (Event event : events)
@@ -144,8 +152,7 @@ public ArrayList<Event> getEventsByOrganizer(String organizerId)
         }
     }
 
-    return matches;
-}
+    return matches;}
 
 
     //==============findEventById================
