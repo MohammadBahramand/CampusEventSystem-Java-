@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class FileManager {
     
@@ -37,6 +38,16 @@ public class FileManager {
 
     }
 
+    public LoadResult load(){
+
+        Path studentsFile = Path.of("data","students.txt");
+        Path organizersFile = Path.of("data","organizers.txt");
+        Path eventsFile = Path.of("data","events.txt");
+        Path registrationsFile = Path.of("data","registrations.txt");
+
+
+        return LoadResult.success();
+    }
     public WriteResult writeFile(WriteRequest request) {
 
         Path path = request.relativePath();

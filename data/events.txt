@@ -1,0 +1,5 @@
+eventId|type|name|description|date|time|location|capacity|organizerId|extraInfo
+3001|ACADEMIC|Java OOP Lecture|Introduction to encapsulation inheritance and polymorphism|2026-11-10|14:00|Academic Building A201|30|2001|Object-Oriented Programming
+3002|CLUB|Robotics Club Meetup|Explore club projects and share robot-building experience|2026-11-12|16:00|Engineering Building B102|2|2003|Robotics Club
+3003|CAREER|Resume Workshop|Learn resume writing and practice mock interviews|2026-11-15|10:00|Career Center 101|20|2002|Example Technology Company
+3004|SOCIAL|Campus Board Game Meetup|Meet new friends through board games|2026-11-18|18:30|Student Activity Center|40|2004|Board Games and Socializing
