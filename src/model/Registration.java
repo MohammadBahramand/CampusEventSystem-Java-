@@ -78,7 +78,7 @@ public class Registration {
         if (student != null)
             studentId = student.getStudentId();
         if (event != null)
-            eventId = event.getEventId();
+            eventId = String.valueOf(event.getEventId());
         
         return registrationId + "|" + studentId + "|" + eventId + "|" + date + "|" + status;
     }
