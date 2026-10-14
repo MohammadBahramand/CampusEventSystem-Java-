@@ -140,9 +140,9 @@ private ArrayList<Event> events = new ArrayList<>();
 
 
 
-       //==========getEventsByOrganizer==========
-      // Returns all events managed by a specific organizer.
-     //========================================
+    //==========getEventsByOrganizer==========
+    // Returns all events managed by a specific organizer.
+    //========================================
      public ArrayList<Event> getEventsByOrganizer(String organizerId){
 
     ArrayList<Event> matches = new ArrayList<>();
