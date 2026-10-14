@@ -1,15 +1,17 @@
-import java.time.LocalDate; // OR this could be a string
+import java.time.LocalDate; // OR date could be a string
 
 public class Registration {
     private Student student;
     private Event event;
-    private LocalDate registrationDate;
+    private LocalDate date;
     private String status;
 
-    public Registration(Student student, Event event, LocalDate registrationDate, String status) {
+    public Registration() {}
+
+    public Registration(Student student, Event event, LocalDate date, String status) {
         this.student = student;
         this.event = event;
-        this.registrationDate = registrationDate;
+        this.date = date;
         this.status = status;
     }
 
@@ -21,8 +23,8 @@ public class Registration {
         return event;
     }
 
-    public LocalDate getRegistration() {
-        return registrationDate;
+    public LocalDate getDate() {
+        return date;
     }
 
     public String getStatus() {
@@ -37,11 +39,28 @@ public class Registration {
         this.event = event;
     }
 
-    public void setRegistration(LocalDate registrationDate) {
-        this.registrationDate = registrationDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void display() {
+        if (student != null) {
+            System.out.print("Student: " + student.getName() + " (" + student.getEmail() + ")\n");
+        } else {
+            System.out.print("Student: N/A\n");
+        }
+
+        if (event != null) {
+            System.out.print("Event: " + event.getName() + "\n");
+        } else {
+            System.out.print("Event: N/A\n");
+        }
+
+        System.out.print("Date: " + date + "\n");
+        System.out.print("Status: " + status + "\n");
     }
 }
