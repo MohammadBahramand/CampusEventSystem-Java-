@@ -1,20 +1,28 @@
-import java.time.LocalDate; // OR date could be a string
+package model;
+
+import java.time.LocalDate;
 
 public class Registration {
-    private Student student;
-    private Event event;
+    // Registration status enum
+    public enum Status {
+        ACTIVE,
+        CANCELED,
+    }
+    
+    final private Student student;
+    final private Event event;
     private LocalDate date;
-    private String status;
+    private Status status;
 
-    public Registration() {}
-
-    public Registration(Student student, Event event, LocalDate date, String status) {
+    // Constuctor
+    public Registration(Student student, Event event, LocalDate date, Status status) {
         this.student = student;
         this.event = event;
         this.date = date;
         this.status = status;
     }
 
+    // Getters
     public Student getStudent() {
         return student;
     }
@@ -27,23 +35,16 @@ public class Registration {
         return date;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
+    // Setters
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
