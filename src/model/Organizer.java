@@ -27,12 +27,12 @@ public class Organizer {
         return organization;
     }
 
-    public void viewOrganizers() {
+    public void display() {
         System.out.println("ID: " + organizerId + "\nName: " 
         + name + "\nEmail: " + email + "\nOrganization: " + organization);
     }
 
-    public String display() {
+    public String toFileString() {
         return organizerId + "|" + name + "|" + email + "|" + organization;
     }
 }
