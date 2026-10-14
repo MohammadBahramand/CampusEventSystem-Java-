@@ -21,13 +21,16 @@ public abstract class Event
     // Location where the event will take place
     private String location;
 
+       // ID of the organizer who manages this event
+       private String organizerId;
+
     // Maximum number of students allowed to register
     private int capacity;
 
     // Constructor used to initialize common event information
     public Event(int eventId, String name, String description,
-                 String date, String time, String location,
-                 int capacity)
+             String date, String time, String location,
+             String organizerId, int capacity)
     {
         this.eventId = eventId;
         this.name = name;
@@ -35,6 +38,7 @@ public abstract class Event
         this.date = date;
         this.time = time;
         this.location = location;
+	this.organizerId=organizerId;
         this.capacity = capacity;
     }
 
@@ -73,6 +77,13 @@ public abstract class Event
     {
         return location;
     }
+
+
+    // Returns the organizer ID
+    public String getOrganizerId(){
+    return organizerId;
+    }
+
 
     // Returns the maximum event capacity
     public int getCapacity()
