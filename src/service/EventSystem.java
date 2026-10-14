@@ -494,4 +494,107 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     public List<Registration> getRegistrations() {
         return Collections.unmodifiableList(registrations);
     }
+    
+    //==========reportEventsWithSpace==========
+    //Prints the events that still have open spots
+    //(capacity minus active registrations is above 0).
+    //=========================================
+    public void reportEventsWithSpace() {
+        System.out.println("=== Events With Available Capacity ===");
+        boolean foundAny = false;
+
+        for (Event event : events) {
+            int registered = getRegisteredCount(event.getEventId());
+            int remaining = event.getCapacity() - registered;
+
+            if (remaining > 0) {
+                foundAny = true;
+                System.out.println(event.getName());
+                System.out.println("  Capacity: " + event.getCapacity());
+                System.out.println("  Registered: " + registered);
+                System.out.println("  Spaces Remaining: " + remaining);
+            }
+        }
+
+        //tell the user when nothing matched instead of printing nothing
+        if (!foundAny) {
+            System.out.println("No events have available capacity.");
+        }
+    }
+
+    //==========reportFullEvents==========
+    //Prints the events where the active registrations have
+    //reached the capacity.
+    //====================================
+    public void reportFullEvents() {
+        System.out.println("=== Full Events ===");
+        boolean foundAny = false;
+
+        for (Event event : events) {
+            int registered = getRegisteredCount(event.getEventId());
+
+            if (registered >= event.getCapacity()) {
+                foundAny = true;
+                System.out.println(event.getName() + " (" + registered + "/"
+                        + event.getCapacity() + ")");
+            }
+        }
+
+        if (!foundAny) {
+            System.out.println("No events are full.");
+        }
+    }
+
+    //==========reportRegistrationsPerEvent==========
+    //Prints one line per event with its number of active
+    //registrations.
+    //===============================================
+    public void reportRegistrationsPerEvent() {
+        System.out.println("=== Registrations Per Event ===");
+
+        if (events.isEmpty()) {
+            System.out.println("No events in the system.");
+            return;
+        }
+
+        for (Event event : events) {
+            System.out.println(event.getName() + ": "
+                    + getRegisteredCount(event.getEventId()) + " registered");
+        }
+    }
+
+    //==========reportStudentsInMultipleEvents==========
+    //For every student, collects the names of the events they are
+    //actively registered for. Prints the student when there are two
+    //or more.
+    //==================================================
+    public void reportStudentsInMultipleEvents() {
+        System.out.println("=== Students Registered for Multiple Events ===");
+        boolean foundAny = false;
+
+        for (Student student : students) {
+            ArrayList<String> eventNames = new ArrayList<>();
+
+            for (Registration r : registrations) {
+                if (r.getStatus() == Registration.Status.ACTIVE
+                        && r.getStudent() != null
+                        && r.getEvent() != null
+                        && r.getStudent().getStudentId().equals(student.getStudentId())) {
+                    eventNames.add(r.getEvent().getName());
+                }
+            }
+
+            if (eventNames.size() >= 2) {
+                foundAny = true;
+                System.out.println(student.getName() + " (" + eventNames.size() + " events)");
+                for (String name : eventNames) {
+                    System.out.println("  - " + name);
+                }
+            }
+        }
+
+        if (!foundAny) {
+            System.out.println("No students are registered for multiple events.");
+        }
+    }
 }
