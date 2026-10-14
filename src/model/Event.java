@@ -38,7 +38,7 @@ public abstract class Event
         this.date = date;
         this.time = time;
         this.location = location;
-	this.organizerId=organizerId;
+	    this.organizerId=organizerId;
         this.capacity = capacity;
     }
 
