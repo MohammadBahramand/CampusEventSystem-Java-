@@ -2,6 +2,7 @@ package persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class FileManager {
     
@@ -33,5 +34,16 @@ public class FileManager {
             System.out.println("There was an error setting up a file: " + error.getMessage());
         }
 
+    }
+
+    public LoadResult load(){
+
+        Path studentsFile = Path.of("data","students.txt");
+        Path organizersFile = Path.of("data","organizers.txt");
+        Path eventsFile = Path.of("data","events.txt");
+        Path registrationsFile = Path.of("data","registrations.txt");
+
+
+        return LoadResult.success();
     }
 }
