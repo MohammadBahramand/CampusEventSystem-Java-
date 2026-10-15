@@ -1,11 +1,10 @@
 //=============EventSystem.java============
-//coordinator class, owns the collections of students
+//coordinator class, owns the collection managers
 //=========================================
 package service;
 
 import model.Student;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import model.Event;
 import model.Organizer;
@@ -13,17 +12,10 @@ import model.Registration;
 import java.time.LocalDate;
 public class EventSystem {
 
-    //a resizable list that keeps students in the order
-    //they were added
-    //the list can ONLY hold Students.
-    private ArrayList<Student> students = new ArrayList<>();
-
-	// A resizable list that stores all events in the system
-	private ArrayList<Event> events = new ArrayList<>();
-
-    //A resizable list that stores all organizers in the system
-    private ArrayList<Organizer> organizers = new ArrayList<>();
-private ArrayList<Registration> registrations = new ArrayList<>();
+    private StudentManager studentManager = new StudentManager();
+    private OrganizerManager organizerManager = new OrganizerManager();
+    private EventManager eventManager = new EventManager();
+    private RegistrationManager registrationManager = new RegistrationManager();
     //==========addStudent==========
     //Adds a new student only if the ID 
     //is not already used.
@@ -31,7 +23,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //===============================
     public boolean addStudent(String id, String name, String email, String major) {
        
-        if (id == null || id.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+        if (id == null || id.isBlank() || name == null || name.isBlank()) {
             System.out.println("Error: student ID and name cannot be blank.");
             return false;
         }
@@ -46,8 +38,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
         }
 
       
-        students.add(new Student(id, name, email, major));
-        return true;        // student was added
+        return studentManager.add(new Student(id, name, email, major));        // student was added
     }
 
     //==============findStudent================
@@ -56,15 +47,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     // Returns the Student, or null if no one has that ID.
     //==========================================
     public Student findStudent(String id) {
-       
-        for (Student s : students) {
-			
-            //while .equals() checks whether the text is the same.
-            if (s.getStudentId().equals(id)) {
-                return s;   // found: return the reference
-            }
-        }
-        return null;        // checked everyone, no match
+        return studentManager.findById(id).orElse(null);
     }
 
     //============displayStudent============
@@ -85,6 +68,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //
     //===========================================
     public void displayAllStudents() {
+        List<Student> students = studentManager.getAll();
 		
         //handle the empty list so the user isn't shown a blank screen.
         if (students.isEmpty()) {
@@ -105,7 +89,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     // Lets other classes read the list when saving.
     //==========================================
     public List<Student> getStudents() {
-        return Collections.unmodifiableList(students);
+        return studentManager.getAll();
     }//end of getStudents
 
 
@@ -122,6 +106,11 @@ private ArrayList<Registration> registrations = new ArrayList<>();
         }
 
 
+        if (event.getName() == null || event.getName().isBlank()) {
+            System.out.println("Error: event name cannot be blank.");
+            return false;
+        }
+
 	 // Make sure the organizer exists
         if (findOrganizer(event.getOrganizerId()) == null)  {
   	         System.out.println("Error: organizer does not exist.");
@@ -135,7 +124,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
             return false;
         }
 
-        events.add(event);
+        eventManager.add(event);
         return true;
     }
 
@@ -145,18 +134,8 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     // Returns all events managed by a specific organizer.
     //========================================
      public ArrayList<Event> getEventsByOrganizer(String organizerId){
-
-    ArrayList<Event> matches = new ArrayList<>();
-
-    for (Event event : events)
-    {
-        if (event.getOrganizerId().equals(organizerId))
-        {
-            matches.add(event);
-        }
+        return new ArrayList<>(eventManager.findByOrganizerId(organizerId));
     }
-
-    return matches;}
 
 
     //==============findEventById================
@@ -165,14 +144,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     // otherwise returns null.
     //===========================================
     public Event findEventById(int eventId) {
-
-        for (Event event : events) {
-            if (event.getEventId() == eventId) {
-                return event;
-            }
-        }
-
-        return null;
+        return eventManager.findById(eventId).orElse(null);
     }
 
 
@@ -182,21 +154,8 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     // Returns a list of matching events.
     //===============================================
     public ArrayList<Event> searchEventByName(String name) {
-
-        ArrayList<Event> matches = new ArrayList<>();
-
-        if (name == null || name.trim().isEmpty()) {
-            return matches;
-        }
-
-        for (Event event : events) {
-            if (event.getName().toLowerCase()
-				.contains(name.toLowerCase())) {
-                matches.add(event);
-            }
-        }
-
-        return matches;
+        if (name == null || name.isBlank()) return new ArrayList<>();
+        return new ArrayList<>(eventManager.searchByName(name));
     }
 
 
@@ -221,6 +180,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     // in the system.
     //==============================================
     public void displayAllEvents() {
+        List<Event> events = eventManager.getAll();
 
         if (events.isEmpty()) {
             System.out.println("No events in the system.");
@@ -242,7 +202,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     // for example when saving data.
     //=======================================
     public List<Event> getEvents() {
-        return Collections.unmodifiableList(events);
+        return eventManager.getAll();
     }
 
 
@@ -253,7 +213,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //================================
     public boolean addOrganizer(String id, String name, String email, String organization) {
         //an empty ID or name makes no sense
-        if (id == null || id.trim().isEmpty() || name == null || name.trim().isEmpty()) {
+        if (id == null || id.isBlank() || name == null || name.isBlank()) {
             System.out.println("Error: organizer ID and name cannot be blank.");
             return false;
         }
@@ -265,7 +225,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
         }
 
         //the list holds a REFERENCE to this one object
-        organizers.add(new Organizer(id, name, email, organization));
+        organizerManager.add(new Organizer(id, name, email, organization));
         return true;
     }
 
@@ -274,13 +234,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //Returns the Organizer, or null if no match.
     //=================================
     public Organizer findOrganizer(String id) {
-        for (Organizer o : organizers) {
-            //strings are compared with .equals(), never ==
-            if (o.getOrganizerId().equals(id)) {
-                return o;
-            }
-        }
-        return null;
+        return organizerManager.findById(id).orElse(null);
     }
 
     //==========displayOrganizer==========
@@ -303,6 +257,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //Prints every organizer, numbered.
     //========================================
     public void displayAllOrganizers() {
+        List<Organizer> organizers = organizerManager.getAll();
         if (organizers.isEmpty()) {
             System.out.println("No organizers in the system.");
             return;
@@ -318,12 +273,12 @@ private ArrayList<Registration> registrations = new ArrayList<>();
 
     //==========getOrganizers==========
     //Read only view for saving to a file.
-    //unmodifiableList lets callers look but
+    //the immutable snapshot lets callers look but
     //not add or remove, which protects the
     //duplicate-ID rule.
     //=================================
     public List<Organizer> getOrganizers() {
-        return Collections.unmodifiableList(organizers);
+        return organizerManager.getAll();
     }
     
     //==========registerStudent==========
@@ -362,14 +317,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
             return false;
         }
 
-        if (existing != null) {
-            //canceled before: reactivate instead of adding a second record
-            existing.setStatus(Registration.Status.ACTIVE);
-            existing.setDate(date);
-        } else {
-            String id = "R" + (registrations.size() + 1);
-            registrations.add(new Registration(id, student, event, date, Registration.Status.ACTIVE));
-        }
+        if (!registrationManager.register(student, event, date)) return false;
 
         System.out.println("Registration successful!");
         System.out.println("Student: " + student.getName());
@@ -387,13 +335,11 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //Returns false if there is nothing to cancel.
     //======================================
     public boolean cancelRegistration(String studentId, int eventId) {
-        Registration r = findRegistration(studentId, eventId);
-        if (r == null || r.getStatus() != Registration.Status.ACTIVE) {
+        if (!registrationManager.cancel(studentId, eventId)) {
             System.out.println("Error: no active registration found for that student and event.");
             return false;
         }
 
-        r.setStatus(Registration.Status.CANCELED);
         System.out.println("Registration canceled.");
         return true;
     }
@@ -403,14 +349,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //student and one event, or null.
     //====================================
     private Registration findRegistration(String studentId, int eventId) {
-        for (Registration r : registrations) {
-            if (r.getStudent() != null && r.getEvent() != null
-                    && r.getStudent().getStudentId().equals(studentId)
-                    && r.getEvent().getEventId() == eventId) {
-                return r;
-            }
-        }
-        return null;
+        return registrationManager.findByStudentAndEvent(studentId, eventId).orElse(null);
     }
 
     //==========getRegisteredCount==========
@@ -418,15 +357,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //and reports).
     //======================================
     public int getRegisteredCount(int eventId) {
-        int count = 0;
-        for (Registration r : registrations) {
-            if (r.getStatus() == Registration.Status.ACTIVE
-                    && r.getEvent() != null
-                    && r.getEvent().getEventId() == eventId) {
-                count++;
-            }
-        }
-        return count;
+        return registrationManager.getActiveCount(eventId);
     }
 
     //==========displayStudentRegistrations==========
@@ -441,16 +372,12 @@ private ArrayList<Registration> registrations = new ArrayList<>();
 
         System.out.println("Student: " + student.getName());
         int count = 0;
-        for (Registration r : registrations) {
-            if (r.getStatus() == Registration.Status.ACTIVE
-                    && r.getStudent() != null
-                    && r.getStudent().getStudentId().equals(studentId)) {
-                if (count == 0) {
-                    System.out.println("Registered Events:");
-                }
-                count++;
-                System.out.println(count + ". " + r.getEvent().getName());
+        for (Registration r : registrationManager.findActiveByStudent(studentId)) {
+            if (count == 0) {
+                System.out.println("Registered Events:");
             }
+            count++;
+            System.out.println(count + ". " + r.getEvent().getName());
         }
 
         if (count == 0) {
@@ -470,16 +397,12 @@ private ArrayList<Registration> registrations = new ArrayList<>();
 
         System.out.println("Event: " + event.getName());
         int count = 0;
-        for (Registration r : registrations) {
-            if (r.getStatus() == Registration.Status.ACTIVE
-                    && r.getEvent() != null
-                    && r.getEvent().getEventId() == eventId) {
-                if (count == 0) {
-                    System.out.println("Registered Students:");
-                }
-                count++;
-                System.out.println(count + ". " + r.getStudent().getName());
+        for (Registration r : registrationManager.findActiveByEvent(eventId)) {
+            if (count == 0) {
+                System.out.println("Registered Students:");
             }
+            count++;
+            System.out.println(count + ". " + r.getStudent().getName());
         }
 
         if (count == 0) {
@@ -491,7 +414,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //Read-only view for reports and saving.
     //====================================
     public List<Registration> getRegistrations() {
-        return Collections.unmodifiableList(registrations);
+        return registrationManager.getAll();
     }
     
     //==========reportEventsWithSpace==========
@@ -499,6 +422,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //(capacity minus active registrations is above 0).
     //=========================================
     public void reportEventsWithSpace() {
+        List<Event> events = eventManager.getAll();
         System.out.println("=== Events With Available Capacity ===");
         boolean foundAny = false;
 
@@ -526,6 +450,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //reached the capacity.
     //====================================
     public void reportFullEvents() {
+        List<Event> events = eventManager.getAll();
         System.out.println("=== Full Events ===");
         boolean foundAny = false;
 
@@ -549,6 +474,7 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //registrations.
     //===============================================
     public void reportRegistrationsPerEvent() {
+        List<Event> events = eventManager.getAll();
         System.out.println("=== Registrations Per Event ===");
 
         if (events.isEmpty()) {
@@ -568,19 +494,15 @@ private ArrayList<Registration> registrations = new ArrayList<>();
     //or more.
     //==================================================
     public void reportStudentsInMultipleEvents() {
+        List<Student> students = studentManager.getAll();
         System.out.println("=== Students Registered for Multiple Events ===");
         boolean foundAny = false;
 
         for (Student student : students) {
             ArrayList<String> eventNames = new ArrayList<>();
 
-            for (Registration r : registrations) {
-                if (r.getStatus() == Registration.Status.ACTIVE
-                        && r.getStudent() != null
-                        && r.getEvent() != null
-                        && r.getStudent().getStudentId().equals(student.getStudentId())) {
-                    eventNames.add(r.getEvent().getName());
-                }
+            for (Registration r : registrationManager.findActiveByStudent(student.getStudentId())) {
+                eventNames.add(r.getEvent().getName());
             }
 
             if (eventNames.size() >= 2) {
@@ -595,5 +517,43 @@ private ArrayList<Registration> registrations = new ArrayList<>();
         if (!foundAny) {
             System.out.println("No students are registered for multiple events.");
         }
+    }
+
+    public void replaceData(List<Student> students, List<Organizer> organizers,
+            List<Event> events, List<Registration> registrations) {
+        StudentManager candidateStudents = new StudentManager();
+        OrganizerManager candidateOrganizers = new OrganizerManager();
+        EventManager candidateEvents = new EventManager();
+        RegistrationManager candidateRegistrations = new RegistrationManager();
+
+        candidateStudents.replaceAll(students);
+        candidateOrganizers.replaceAll(organizers);
+        candidateEvents.replaceAll(events);
+        for (Event event : candidateEvents.getAll()) {
+            if (candidateOrganizers.findById(event.getOrganizerId()).isEmpty()) {
+                throw new IllegalArgumentException("Event organizer does not exist.");
+            }
+        }
+        candidateRegistrations.replaceAll(registrations);
+        for (Registration registration : candidateRegistrations.getAll()) {
+            if (candidateStudents.findById(registration.getStudent().getStudentId()).orElse(null)
+                    != registration.getStudent()) {
+                throw new IllegalArgumentException("Registration must reference the candidate student instance.");
+            }
+            if (candidateEvents.findById(registration.getEvent().getEventId()).orElse(null)
+                    != registration.getEvent()) {
+                throw new IllegalArgumentException("Registration must reference the candidate event instance.");
+            }
+        }
+        for (Event event : candidateEvents.getAll()) {
+            if (candidateRegistrations.getActiveCount(event.getEventId()) > event.getCapacity()) {
+                throw new IllegalArgumentException("Event capacity exceeded.");
+            }
+        }
+
+        studentManager = candidateStudents;
+        organizerManager = candidateOrganizers;
+        eventManager = candidateEvents;
+        registrationManager = candidateRegistrations;
     }
 }

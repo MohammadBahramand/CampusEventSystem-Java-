@@ -8,10 +8,14 @@ import model.Event;
 
 /** Owns events in insertion order; no file or presentation logic. */
 public class EventManager {
+    // A resizable list that stores all events in the system
     private final List<Event> events = new ArrayList<>();
 
     public boolean add(Event event) {
         if (event == null) throw new IllegalArgumentException("Event is required.");
+        if (event.getName() == null || event.getName().isBlank()
+                || event.getOrganizerId() == null || event.getOrganizerId().isBlank())
+            throw new IllegalArgumentException("Event name and organizer ID are required.");
         if (findById(event.getEventId()).isPresent()) return false;
         events.add(event);
         return true;
@@ -53,7 +57,7 @@ public class EventManager {
         if (keyword == null)
             throw new IllegalArgumentException("Keyword is required.");
 
-        String query = keyword.trim().toLowerCase(Locale.ROOT);
+        String query = keyword.toLowerCase(Locale.ROOT);
         
         return events.stream()
                 .filter(event -> event.getName().toLowerCase(Locale.ROOT).contains(query)).toList();

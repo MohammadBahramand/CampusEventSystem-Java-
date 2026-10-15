@@ -12,6 +12,7 @@ import persistence.DataFormatException;
 import persistence.FileManager;
 import persistence.InitResult;
 import persistence.ReadResult;
+import service.EventSystem;
 import ui.ConsoleView;
 
 public class Application {
@@ -19,16 +20,12 @@ public class Application {
     private FileManager fileManager;
     private DataConverter dataConverter;
     private ConsoleView consoleView;
+    private final EventSystem eventSystem;
 
     private ReadResult studentsReadResult;
     private ReadResult organizersReadResult;
     private ReadResult eventsReadResult;
     private ReadResult registrationsReadResult;
-
-    private List<Student> parsedStudents = List.of();
-    private List<Organizer> parsedOrganizers = List.of();
-    private List<Event> parsedEvents = List.of();
-    private List<Registration> parsedRegistrations = List.of();
 
     private boolean keepRuning = true;
 
@@ -36,15 +33,11 @@ public class Application {
         fileManager = new FileManager();
         dataConverter = new DataConverter();
         consoleView = new ConsoleView();
+        eventSystem = new EventSystem();
     }
 
     public void init()
     {
-        parsedStudents = List.of();
-        parsedOrganizers = List.of();
-        parsedEvents = List.of();
-        parsedRegistrations = List.of();
-
         studentsReadResult = null;
         organizersReadResult = null;
         eventsReadResult = null;
@@ -84,8 +77,6 @@ public class Application {
         {
 
         }
-    //TODO: run console UI
-    //TODO: save data
     }
 
     private void convertData() {
@@ -112,14 +103,13 @@ public class Application {
             List<Registration> registrations = dataConverter.parseRegistrations(
                     registrationsReadResult.content(), studentIndex, eventIndex);
 
-            // Publish only the complete conversion; business collections are not loaded here.
-            parsedStudents = students;
-            parsedOrganizers = organizers;
-            parsedEvents = events;
-            parsedRegistrations = registrations;
+            // Publish only the complete conversion after all business relationships are validated.
+            eventSystem.replaceData(students, organizers, events, registrations);
         } catch (DataFormatException error) {
             consoleView.showError("Could not parse " + fileName + " at line "
                     + error.getLineNumber() + ": " + error.getMessage());
+        } catch (IllegalArgumentException error) {
+            consoleView.showError("Could not load data: " + error.getMessage());
         }
     }
 

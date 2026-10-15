@@ -7,12 +7,17 @@ import model.Organizer;
 
 /** Owns organizers in insertion order; ID queries use linear traversal. */
 public class OrganizerManager {
+    //A resizable list that stores all organizers in the system
     private final List<Organizer> organizers = new ArrayList<>();
 
     /** Returns false for a duplicate ID without replacing the existing organizer. */
     public boolean add(Organizer organizer) {
         if (organizer == null)
             throw new IllegalArgumentException("Organizer must not be null.");
+
+        if (organizer.getOrganizerId() == null || organizer.getOrganizerId().isBlank()
+                || organizer.getName() == null || organizer.getName().isBlank())
+            throw new IllegalArgumentException("Organizer ID and name cannot be blank.");
 
         if (findById(organizer.getOrganizerId()).isPresent())
             return false;
@@ -40,6 +45,7 @@ public class OrganizerManager {
 
     public Optional<Organizer> findById(String organizerId) {
         for (Organizer organizer : organizers) {
+            //strings are compared with .equals(), never ==
             if (organizer.getOrganizerId().equals(organizerId)) return Optional.of(organizer);
         }
         return Optional.empty();
