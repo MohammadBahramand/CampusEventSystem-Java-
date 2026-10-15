@@ -1,0 +1,241 @@
+// Simplified UML overview of the current implementation.
+// Render with Graphviz: dot -Tpng -Gdpi=150 uml.dot -o uml.png
+// Fields and methods are intentionally selective; getters and helper types are omitted.
+digraph CampusEventSystem {
+  graph [
+    rankdir=TB, newrank=true, splines=polyline, nodesep=0.40, ranksep=0.78,
+    pad=0.35, bgcolor="white", fontname="Arial", fontsize=22,
+    label="Campus Event Management System\nSimplified UML Class Diagram",
+    labelloc=t, labeljust=c, compound=true, dpi=150
+  ];
+  node [shape=plain, color="#64748B",
+        fontname="Arial", fontsize=11, margin="0.14,0.10", penwidth=1.15];
+  edge [color="#64748B", fontcolor="#475569", fontname="Arial", fontsize=10,
+        arrowsize=0.8, penwidth=1.15];
+
+  subgraph cluster_app {
+    label="app"; fontsize=15; fontcolor="#1E40AF";
+    color="#93B4E5"; style="rounded,filled"; fillcolor="#EFF6FF";
+    Main [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>Main</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ main(args): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    Application [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>Application</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ init(): void<BR ALIGN="LEFT"/>+ run(): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    Main -> Application [style=dashed, arrowhead=vee, label="creates / starts"];
+  }
+
+  subgraph cluster_ui {
+    label="ui"; fontsize=15; fontcolor="#0F766E";
+    color="#8BD0C5"; style="rounded,filled"; fillcolor="#F0FDFA";
+    ConsoleInput [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>ConsoleInput</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ readInt(): int<BR ALIGN="LEFT"/>+ readString(): String<BR ALIGN="LEFT"/>+ readBoolean(): boolean<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    ConsoleView [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>ConsoleView</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ showMenu(): void<BR ALIGN="LEFT"/>+ showMessage(message): void<BR ALIGN="LEFT"/>+ showError(message): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    ConsoleInput -> ConsoleView [style=invis];
+  }
+
+  subgraph cluster_service {
+    label="service"; fontsize=15; fontcolor="#6D28D9";
+    color="#BFA1E7"; style="rounded,filled"; fillcolor="#F5F3FF";
+    EventSystem [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>EventSystem</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ addStudent(...): boolean<BR ALIGN="LEFT"/>+ addOrganizer(...): boolean<BR ALIGN="LEFT"/>+ addEvent(event): boolean<BR ALIGN="LEFT"/>+ registerStudent(...): boolean<BR ALIGN="LEFT"/>+ cancelRegistration(...): boolean<BR ALIGN="LEFT"/>+ replaceData(...): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    StudentManager [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>StudentManager</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- students: List&lt;Student&gt;<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ add(student): boolean<BR ALIGN="LEFT"/>+ findById(id): Optional&lt;Student&gt;<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    RegistrationManager [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>RegistrationManager</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- registrations: List&lt;Registration&gt;<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ register(...): boolean<BR ALIGN="LEFT"/>+ cancel(...): boolean<BR ALIGN="LEFT"/>+ getActiveCount(eventId): int<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    EventManager [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>EventManager</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- events: List&lt;Event&gt;<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ add(event): boolean<BR ALIGN="LEFT"/>+ searchByName(keyword): List&lt;Event&gt;<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    OrganizerManager [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>OrganizerManager</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- organizers: List&lt;Organizer&gt;<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ add(organizer): boolean<BR ALIGN="LEFT"/>+ findById(id): Optional&lt;Organizer&gt;<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    { rank=same; StudentManager; RegistrationManager; EventManager; OrganizerManager; }
+    EventSystem -> StudentManager [dir=both, arrowtail=diamond, arrowhead=none];
+    EventSystem -> RegistrationManager [dir=both, arrowtail=diamond, arrowhead=none];
+    EventSystem -> EventManager [dir=both, arrowtail=diamond, arrowhead=none];
+    EventSystem -> OrganizerManager [dir=both, arrowtail=diamond, arrowhead=none];
+  }
+
+  subgraph cluster_persistence {
+    label="persistence"; fontsize=15; fontcolor="#B45309";
+    color="#E5BA70"; style="rounded,filled"; fillcolor="#FFFBEB";
+    FileManager [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>FileManager</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- dataDirectory: Path<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ init(): InitResult<BR ALIGN="LEFT"/>+ readFile(request): ReadResult<BR ALIGN="LEFT"/>+ save(...): WriteResult<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    DataConverter [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>DataConverter</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ parseStudents(text): List&lt;Student&gt;<BR ALIGN="LEFT"/>+ parseEvents(text): List&lt;Event&gt;<BR ALIGN="LEFT"/>+ parseRegistrations(...): List&lt;Registration&gt;<BR ALIGN="LEFT"/>+ serializeEvents(events): String<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    FileManager -> DataConverter [style=invis];
+  }
+
+  subgraph cluster_model {
+    label="model"; fontsize=15; fontcolor="#334155";
+    color="#A5B4C7"; style="rounded,filled"; fillcolor="#F8FAFC";
+    Student [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>Student</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- studentId: String<BR ALIGN="LEFT"/>- name: String<BR ALIGN="LEFT"/>- email: String<BR ALIGN="LEFT"/>- major: String<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    Registration [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>Registration</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- registrationId: String<BR ALIGN="LEFT"/>- student: Student<BR ALIGN="LEFT"/>- event: Event<BR ALIGN="LEFT"/>- date: LocalDate<BR ALIGN="LEFT"/>- status: Status<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    Event [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>&lt;&lt;abstract&gt;&gt;<BR/>Event</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- eventId: int<BR ALIGN="LEFT"/>- name: String<BR ALIGN="LEFT"/>- organizerId: String<BR ALIGN="LEFT"/>- capacity: int<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ displayDetails(): void {abstract}<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    Organizer [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>Organizer</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- organizerId: String<BR ALIGN="LEFT"/>- name: String<BR ALIGN="LEFT"/>- email: String<BR ALIGN="LEFT"/>- organization: String<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    { rank=same; Student; Registration; Event; Organizer; }
+    Student -> Registration -> Event -> Organizer [style=invis, weight=20];
+
+    AcademicEvent [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>AcademicEvent</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- subject: String<BR ALIGN="LEFT"/>- speaker: String<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ displayDetails(): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    ClubEvent [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>ClubEvent</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- clubName: String<BR ALIGN="LEFT"/>- membersOnly: boolean<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ displayDetails(): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    CareerEvent [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>CareerEvent</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- companyName: String<BR ALIGN="LEFT"/>- resumeRequired: boolean<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ displayDetails(): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    SocialEvent [label=<
+      <TABLE BORDER="1" COLOR="#64748B" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="white">
+        <TR><TD ALIGN="CENTER"><B>SocialEvent</B></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">- theme: String<BR ALIGN="LEFT"/>- foodProvided: boolean<BR ALIGN="LEFT"/></TD></TR>
+        <HR/>
+        <TR><TD ALIGN="LEFT">+ displayDetails(): void<BR ALIGN="LEFT"/></TD></TR>
+      </TABLE>
+    >];
+    { rank=same; AcademicEvent; ClubEvent; CareerEvent; SocialEvent; }
+    AcademicEvent -> ClubEvent -> CareerEvent -> SocialEvent [style=invis, weight=10];
+
+    // Reverse direction keeps the base class above subclasses, with the UML triangle at Event.
+    Event -> AcademicEvent [dir=back, arrowtail=empty, arrowhead=none];
+    Event -> ClubEvent [dir=back, arrowtail=empty, arrowhead=none];
+    Event -> CareerEvent [dir=back, arrowtail=empty, arrowhead=none];
+    Event -> SocialEvent [dir=back, arrowtail=empty, arrowhead=none];
+
+    Registration -> Student [arrowhead=vee, headlabel="1", taillabel="0..*", constraint=false];
+    Registration -> Event [arrowhead=vee, headlabel="1", taillabel="0..*", constraint=false];
+    Event -> Organizer [style=dashed, arrowhead=vee, label="organizerId\nID link only", constraint=false];
+  }
+
+  // Application creates and holds these components; persistence is coordinated here.
+  Application -> ConsoleInput [dir=both, arrowtail=diamond, arrowhead=none];
+  Application -> ConsoleView [dir=both, arrowtail=diamond, arrowhead=none];
+  Application -> EventSystem [dir=both, arrowtail=diamond, arrowhead=none, weight=5];
+  Application -> FileManager [dir=both, arrowtail=diamond, arrowhead=none];
+  Application -> DataConverter [dir=both, arrowtail=diamond, arrowhead=none];
+
+  // Hollow diamonds indicate collections of shared model objects, not exclusive lifetimes.
+  StudentManager -> Student [dir=both, arrowtail=odiamond, arrowhead=none, headlabel="0..*", label="manages"];
+  RegistrationManager -> Registration [dir=both, arrowtail=odiamond, arrowhead=none, headlabel="0..*", label="manages"];
+  EventManager -> Event [dir=both, arrowtail=odiamond, arrowhead=none, headlabel="0..*", label="manages"];
+  OrganizerManager -> Organizer [dir=both, arrowtail=odiamond, arrowhead=none, headlabel="0..*", label="manages"];
+
+  Legend [shape=plain, fontsize=11, label=<
+    <TABLE BORDER="1" COLOR="#CBD5E1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="7" BGCOLOR="#FFFFFF">
+      <TR><TD COLSPAN="2"><B>Legend</B></TD></TR>
+      <TR><TD ALIGN="LEFT">Filled diamond: component ownership</TD><TD ALIGN="LEFT">Hollow diamond: managed collection</TD></TR>
+      <TR><TD ALIGN="LEFT">Hollow triangle: inheritance</TD><TD ALIGN="LEFT">Solid arrow: object reference</TD></TR>
+      <TR><TD ALIGN="LEFT">Dashed arrow: dependency / ID link</TD><TD ALIGN="LEFT">+ public method / - private field</TD></TR>
+      <TR><TD COLSPAN="2">Selected members only. Registration status: ACTIVE / CANCELED.</TD></TR>
+    </TABLE>
+  >];
+  ClubEvent -> Legend [style=invis];
+  CareerEvent -> Legend [style=invis];
+}

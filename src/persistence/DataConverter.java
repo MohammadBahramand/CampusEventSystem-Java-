@@ -31,7 +31,10 @@ public class DataConverter {
         for (int i = header + 1; i < lines.length; i++) {
             if (lines[i].isBlank()) continue;
             String[] fields = splitFields(lines[i], 4, i + 1);
-            String id = Integer.toString(parseInteger(fields[0], "studentId", i + 1));
+            for (int field = 0; field < fields.length; field++) {
+                requireText(fields[field], "Student field " + (field + 1), i + 1);
+            }
+            String id = fields[0];
             checkUnique(ids, id, i + 1);
             students.add(new Student(id, fields[1], fields[2], fields[3]));
         }
@@ -46,7 +49,10 @@ public class DataConverter {
         for (int i = header + 1; i < lines.length; i++) {
             if (lines[i].isBlank()) continue;
             String[] fields = splitFields(lines[i], 4, i + 1);
-            String id = Integer.toString(parseInteger(fields[0], "organizerId", i + 1));
+            for (int field = 0; field < fields.length; field++) {
+                requireText(fields[field], "Organizer field " + (field + 1), i + 1);
+            }
+            String id = fields[0];
             checkUnique(ids, id, i + 1);
             organizers.add(new Organizer(id, fields[1], fields[2], fields[3]));
         }
@@ -118,6 +124,7 @@ public class DataConverter {
         return List.copyOf(registrations);
     }
 
+
     public String serializeStudents(List<Student> students) {
         if (students == null) throw new IllegalArgumentException("Students are required.");
         StringBuilder text = new StringBuilder(STUDENT_HEADER).append('\n');
@@ -129,6 +136,7 @@ public class DataConverter {
         }
         return text.toString();
     }
+
 
     public String serializeOrganizers(List<Organizer> organizers) {
         if (organizers == null) throw new IllegalArgumentException("Organizers are required.");
@@ -142,7 +150,7 @@ public class DataConverter {
         return text.toString();
     }
 
-    /** Includes both subtype-specific fields; only an academic speaker may be empty. */
+
     public String serializeEvents(List<Event> events) {
         if (events == null) throw new IllegalArgumentException("Events are required.");
         StringBuilder text = new StringBuilder(EVENT_HEADER).append('\n');
@@ -180,6 +188,7 @@ public class DataConverter {
         }
         return text.toString();
     }
+
 
     public String serializeRegistrations(List<Registration> registrations) {
         if (registrations == null) throw new IllegalArgumentException("Registrations are required.");

@@ -88,6 +88,23 @@ public class FileManager {
         }
     }
 
+    public WriteResult save(String studentsText, String organizersText,
+                            String eventsText, String registrationsText) {
+        List<WriteRequest> requests = List.of(
+                new WriteRequest(STUDENTS_FILE, studentsText),
+                new WriteRequest(ORGANIZERS_FILE, organizersText),
+                new WriteRequest(EVENTS_FILE, eventsText),
+                new WriteRequest(REGISTRATIONS_FILE, registrationsText));
+        for (WriteRequest request : requests) {
+
+            WriteResult result = writeFile(request);
+
+            if (!result.isSuccess())
+                return result;
+        }
+        return WriteResult.success();
+    }
+
     public WriteResult writeFile(WriteRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("A write request is required.");

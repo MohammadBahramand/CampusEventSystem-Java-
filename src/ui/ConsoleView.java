@@ -22,6 +22,11 @@ public class ConsoleView {
         System.out.println("9. View Event Attendees");
         System.out.println("10. View Organizers");
         System.out.println("11. System Reports");
+        System.out.println("12. Add Organizer");
+        System.out.println("13. Find Organizer by ID");
+        System.out.println("14. View Events by Organizer");
+        System.out.println("15. Find Student by ID");
+        System.out.println("16. Find Event by ID");
         System.out.println("0. Exit");
         System.out.print("Enter selection: ");
     }
