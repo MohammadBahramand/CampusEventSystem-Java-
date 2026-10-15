@@ -10,8 +10,8 @@ public class Registration {
     }
 
     private final String registrationId;
-    final private Student student;
-    final private Event event;
+    private final Student student;
+    private final Event event;
     private LocalDate date;
     private Status status;
 
